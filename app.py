@@ -10,6 +10,7 @@ LINE_CHANNEL_ACCESS_TOKEN = "lYXMSpNS3AxJCtNe+j611Q+AveoY0kuE18Xg0Lh0wZYRSY13qWv
 
 # 從 Render 環境變數讀取 OpenAI 金鑰
 openai.api_key = os.getenv("OPENAI_API_KEY")
+print("目前金鑰是：", openai.api_key)  # Debug 行，幫助檢查是否有讀到金鑰
 
 @app.route("/callback", methods=["POST"])
 def callback():
