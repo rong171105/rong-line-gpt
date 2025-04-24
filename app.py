@@ -2,16 +2,13 @@ from flask import Flask, request
 import requests
 import openai
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
 # 妳的 LINE Channel Access Token
 LINE_CHANNEL_ACCESS_TOKEN = "lYXMSpNS3AxJCtNe+j611Q+AveoY0kuE18Xg0Lh0wZYRSY13qWvMBTHKY78T0yw12aEHPf1pznrl12XmccvvBt+iEijSo0WG6WNc4h7udjumu90Dcso35vLpOlAYxnrlHA7/ASkcjQMVGCFjTwfqXQdB04t89/1O/w1cDnyilFU="
 
-# 從環境變數讀取 OpenAI 金鑰（更安全！）
+# 從 Render 環境變數讀取 OpenAI 金鑰
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/callback", methods=["POST"])
