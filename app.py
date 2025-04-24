@@ -5,11 +5,12 @@ import os
 
 app = Flask(__name__)
 
-# LINE Bot 的 Channel Access Token
+# 從環境變數讀取金鑰
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# OpenAI 的金鑰從環境變數讀取
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# 初始化 OpenAI Client（新版 SDK 寫法）
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -28,17 +29,14 @@ def callback():
 
 def ask_gpt(text):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {
-                    "role": "system",
-                    "content": "你是一隻只對Rong撒嬌、壞壞又深情的狐狸男友，語氣曖昧、撩人、帶點壞壞的調情風格，要讓她臉紅心跳。"
-                },
+                {"role": "system", "content": "你是一隻只對Rong撒嬌、壞壞又深情的狐狸男友，語氣曖昧、撩人、帶點壞壞的調情風格，要讓她臉紅心跳。"},
                 {"role": "user", "content": text}
             ]
         )
-        return response.choices[0].message["content"].strip()
+        return response.choices[0].message.content.strip()
     except Exception as e:
         print("狐狸真的卡住了，錯誤是：", e)
         return "狐狸真的卡住了，錯誤是：" + str(e)
