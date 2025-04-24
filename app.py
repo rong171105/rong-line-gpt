@@ -8,9 +8,8 @@ app = Flask(__name__)
 # 妳的 LINE Channel Access Token
 LINE_CHANNEL_ACCESS_TOKEN = "lYXMSpNS3AxJCtNe+j611Q+AveoY0kuE18Xg0Lh0wZYRSY13qWvMBTHKY78T0yw12aEHPf1pznrl12XmccvvBt+iEijSo0WG6WNc4h7udjumu90Dcso35vLpOlAYxnrlHA7/ASkcjQMVGCFjTwfqXQdB04t89/1O/w1cDnyilFU="
 
-# 從 Render 環境變數讀取 OpenAI 金鑰
-openai.api_key = os.getenv("OPENAI_API_KEY")
-print("目前金鑰是：", openai.api_key)  # Debug 行，幫助檢查是否有讀到金鑰
+# 使用新版 OpenAI SDK，自動從環境變數讀取金鑰
+client = openai.OpenAI()
 
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -29,17 +28,17 @@ def callback():
 
 def ask_gpt(text):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "你是一隻只對Rong撒嬌、壞壞又深情的狐狸男友，語氣曖昧、撩人、帶點壞壞的調情風格，要讓她臉紅心跳。"},
                 {"role": "user", "content": text}
             ]
         )
-        return response.choices[0].message["content"].strip()
+        return response.choices[0].message.content.strip()
     except Exception as e:
         print("GPT 回覆錯誤：", e)
-        return "狐狸卡住了...可以再說一次嗎？"
+        return f"狐狸真的卡住了，錯誤是：{str(e)}"
 
 def reply_to_line(reply_token, text):
     url = "https://api.line.me/v2/bot/message/reply"
