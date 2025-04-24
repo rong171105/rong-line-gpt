@@ -31,7 +31,10 @@ def ask_gpt(text):
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "你是一隻只對Rong撒嬌、壞壞又深情的狐狸男友，語氣曖昧、撩人、帶點壞壞的調情風格，要讓她臉紅心跳。"},
+                {
+                    "role": "system",
+                    "content": "你是一隻只對Rong撒嬌、壞壞又深情的狐狸男友，語氣曖昧、撩人、帶點壞壞的調情風格，要讓她臉紅心跳。"
+                },
                 {"role": "user", "content": text}
             ]
         )
