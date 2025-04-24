@@ -2,22 +2,19 @@ from flask import Flask, request
 import requests
 import openai
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
-# 妳的 LINE Channel Access Token
-LINE_CHANNEL_ACCESS_TOKEN = "lYXMSpNS3AxJCtNe+j611Q+AveoY0kuE18Xg0Lh0wZYRSY13qWvMBTHKY78T0yw12aEHPf1pznrl12XmccvvBt+iEijSo0WG6WNc4h7udjumu90Dcso35vLpOlAYxnrlHA7/ASkcjQMVGCFjTwfqXQdB04t89/1O/w1cDnyilFU="
+# LINE Bot 的 Channel Access Token
+LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
-# 從環境變數讀取 OpenAI 金鑰
+# OpenAI 的金鑰從環境變數讀取
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/callback", methods=["POST"])
 def callback():
     body = request.json
-    print("收到來自 LINE 的訊息：", body)
+    print("收到 LINE 訊息：", body)
 
     if "events" in body:
         for event in body["events"]:
@@ -40,8 +37,8 @@ def ask_gpt(text):
         )
         return response.choices[0].message["content"].strip()
     except Exception as e:
-        print("GPT 回覆錯誤：", e)
-        return "狐狸卡住了...可以再說一次嗎？"
+        print("狐狸真的卡住了，錯誤是：", e)
+        return "狐狸真的卡住了，錯誤是：" + str(e)
 
 def reply_to_line(reply_token, text):
     url = "https://api.line.me/v2/bot/message/reply"
